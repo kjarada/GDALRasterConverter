@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Project Name and Language
-project(GeoTIFF2JP2 LANGUAGES CXX)
+project(GDAL Raster Converter LANGUAGES CXX)
 
 # Set C++ Standard
 set(CMAKE_CXX_STANDARD 23)

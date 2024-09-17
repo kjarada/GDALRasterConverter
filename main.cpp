@@ -33,6 +33,7 @@
 // GDAL Headers
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
+#include "cpl_string.h" // for CSLTokenizeString2
 
 // Worker class to handle conversion in a separate thread
 class Worker : public QObject
@@ -383,7 +384,7 @@ private:
         Worker* worker = static_cast<Worker*>(pProgressArg);
         if (worker->isConverting.load())
         {
-            worker->emit progressUpdated(static_cast<float>(dfComplete));
+            emit worker->progressUpdated(static_cast<float>(dfComplete));
             return TRUE; // Continue processing
         }
         else
@@ -901,9 +902,9 @@ private slots:
                     {
                         const char* optionName = CPLGetXMLValue(psChild, "name", nullptr);
                         const char* optionType = CPLGetXMLValue(psChild, "type", "string");
-                        const char* defaultValue = CPLGetXMLValue(psChild, "default", "");
+                        const char* defaultValue = CPLGetXMLValue(psChild, "default", nullptr);
                         const char* description = CPLGetXMLValue(psChild, "description", "");
-                        const char* values = CPLGetXMLValue(psChild, "value", nullptr);
+                        const char* values = CPLGetXMLValue(psChild, "values", nullptr);
 
                         if (optionName)
                         {
@@ -916,54 +917,83 @@ private slots:
                             {
                                 QCheckBox* checkBox = new QCheckBox();
                                 checkBox->setProperty("optionKey", optionName);
-                                checkBox->setChecked(EQUAL(defaultValue, "YES") || EQUAL(defaultValue, "TRUE") || EQUAL(defaultValue, "1"));
+                                if (defaultValue)
+                                {
+                                    checkBox->setChecked(EQUAL(defaultValue, "YES") || EQUAL(defaultValue, "TRUE") || EQUAL(defaultValue, "1"));
+                                }
+                                else
+                                {
+                                    checkBox->setChecked(false); // Default to unchecked if no default value
+                                }
                                 inputWidget = checkBox;
                             }
                             else if (EQUAL(optionType, "int") || EQUAL(optionType, "uint"))
                             {
                                 QSpinBox* spinBox = new QSpinBox();
                                 spinBox->setProperty("optionKey", optionName);
-                                spinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
-                                spinBox->setValue(QString(defaultValue).toInt());
+                                int minValue = QString(CPLGetXMLValue(psChild, "min", QString::number(std::numeric_limits<int>::min()).toStdString().c_str())).toInt();
+                                int maxValue = QString(CPLGetXMLValue(psChild, "max", QString::number(std::numeric_limits<int>::max()).toStdString().c_str())).toInt();
+                                spinBox->setRange(minValue, maxValue);
+                                if (defaultValue)
+                                {
+                                    spinBox->setValue(QString(defaultValue).toInt());
+                                }
                                 inputWidget = spinBox;
                             }
                             else if (EQUAL(optionType, "float") || EQUAL(optionType, "double"))
                             {
                                 QDoubleSpinBox* doubleSpinBox = new QDoubleSpinBox();
                                 doubleSpinBox->setProperty("optionKey", optionName);
-                                doubleSpinBox->setRange(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+                                double minValue = QString(CPLGetXMLValue(psChild, "min", QString::number(-std::numeric_limits<double>::max()).toStdString().c_str())).toDouble();
+                                double maxValue = QString(CPLGetXMLValue(psChild, "max", QString::number(std::numeric_limits<double>::max()).toStdString().c_str())).toDouble();
+                                doubleSpinBox->setRange(minValue, maxValue);
                                 doubleSpinBox->setDecimals(6);
-                                doubleSpinBox->setValue(QString(defaultValue).toDouble());
+                                if (defaultValue)
+                                {
+                                    doubleSpinBox->setValue(QString(defaultValue).toDouble());
+                                }
                                 inputWidget = doubleSpinBox;
                             }
                             else if (EQUAL(optionType, "string"))
                             {
-                                if (values) // Enum type
+                                // Check if there are enumerated values
+                                CPLXMLNode* psValueNode = psChild->psChild;
+                                bool hasEnumValues = false;
+                                QStringList enumValues;
+                                while (psValueNode)
+                                {
+                                    if (EQUAL(psValueNode->pszValue, "Value"))
+                                    {
+                                        const char* valueString = CPLGetXMLValue(psValueNode, nullptr, "");
+                                        enumValues.append(valueString);
+                                        hasEnumValues = true;
+                                    }
+                                    psValueNode = psValueNode->psNext;
+                                }
+
+                                if (hasEnumValues)
                                 {
                                     QComboBox* comboBox = new QComboBox();
                                     comboBox->setProperty("optionKey", optionName);
-                                    CPLXMLNode* psValueNode = psChild->psChild;
-                                    while (psValueNode)
+                                    comboBox->addItems(enumValues);
+                                    if (defaultValue)
                                     {
-                                        if (EQUAL(psValueNode->pszValue, "Value"))
+                                        int defaultIndex = comboBox->findText(defaultValue);
+                                        if (defaultIndex != -1)
                                         {
-                                            const char* valueString = CPLGetXMLValue(psValueNode, nullptr, "");
-                                            comboBox->addItem(valueString);
+                                            comboBox->setCurrentIndex(defaultIndex);
                                         }
-                                        psValueNode = psValueNode->psNext;
-                                    }
-                                    int defaultIndex = comboBox->findText(defaultValue);
-                                    if (defaultIndex != -1)
-                                    {
-                                        comboBox->setCurrentIndex(defaultIndex);
                                     }
                                     inputWidget = comboBox;
                                 }
-                                else // Regular string
+                                else
                                 {
                                     QLineEdit* lineEdit = new QLineEdit();
                                     lineEdit->setProperty("optionKey", optionName);
-                                    lineEdit->setText(defaultValue);
+                                    if (defaultValue)
+                                    {
+                                        lineEdit->setText(defaultValue);
+                                    }
                                     inputWidget = lineEdit;
                                 }
                             }
@@ -972,7 +1002,10 @@ private slots:
                                 // Fallback to QLineEdit for unknown types
                                 QLineEdit* lineEdit = new QLineEdit();
                                 lineEdit->setProperty("optionKey", optionName);
-                                lineEdit->setText(defaultValue);
+                                if (defaultValue)
+                                {
+                                    lineEdit->setText(defaultValue);
+                                }
                                 inputWidget = lineEdit;
                             }
 
