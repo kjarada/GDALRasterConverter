@@ -1,31 +1,18 @@
 {
-    "version": 8,
-    "configurePresets": [
-        {
-            "name": "GCC 14.1.0 x86_64-w64-mingw32 (mingw64)",
-            "displayName": "GCC 14.1.0 x86_64-w64-mingw32 (mingw64)",
-            "description": "Using compilers: C = D:\\msys64\\mingw64\\bin\\gcc.exe, CXX = D:\\msys64\\mingw64\\bin\\g++.exe",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "D:/msys64/mingw64/bin/gcc.exe",
-                "CMAKE_CXX_COMPILER": "D:/msys64/mingw64/bin/g++.exe",
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
-        },
-        {
-            "name": "Mingw64 GCC 9.3.0",
-            "displayName": "Mingw64 GCC 9.3.0",
-            "description": "Using compilers: C = D:\\msys64\\mingw64\\bin\\gcc.exe, CXX = D:\\msys64\\mingw64\\bin\\g++.exe",
-            "generator": "MinGW Makefiles",
-            "architecture": "x64",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "D:/msys64/mingw64/bin/gcc.exe",
-                "CMAKE_CXX_COMPILER": "D:/msys64/mingw64/bin/g++.exe",
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
-        }
-    ]
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "windows-vs2022-vcpkg",
+      "displayName": "Windows VS2022 with vcpkg",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "architecture": {
+        "value": "x64"
+      },
+      "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ]
 }
