@@ -1,7 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "dependencies": [
-    "gdal"
+    "gdal",
+    "qt"
   ],
-  "builtin-baseline": "c380c74bd7c30a710bc502c3f3605a74283ff27e"
+  "builtin-baseline": "c8582b4d83dbd36e1bebc08bf166b5eb807996b0"
 }
