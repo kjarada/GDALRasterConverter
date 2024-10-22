@@ -1,4 +1,4 @@
-GDALRasterConverter
+
 GDALRasterConverter is a tool developed in C++ that simplifies the conversion of raster data between different formats using the GDAL library. It leverages the power of C++ for efficient processing and CMake for streamlined builds across platforms.
 
 Features
