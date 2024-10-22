@@ -3,5 +3,5 @@
   "dependencies": [
     "gdal"
   ],
-  "builtin-baseline": "commit-id-here"
+  "builtin-baseline": "70d7d2842a7964d397c2e7540200a3143c527535"
 }
