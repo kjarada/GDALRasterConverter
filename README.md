@@ -17,7 +17,7 @@ Clone the repository
 
 bash
 Copy code
-git clone https://github.com/yourusername/GDALRasterConverter.git
+git clone https://github.com/kjarada/GDALRasterConverter.git
 cd GDALRasterConverter
 Install GDAL and its development libraries
 
