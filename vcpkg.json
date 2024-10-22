@@ -3,5 +3,5 @@
   "dependencies": [
     "gdal"
   ],
-  "builtin-baseline": "1fe25ac0a10ec47cdbebe26b2a857c535802bd10"
+  "builtin-baseline": "c380c74bd7c30a710bc502c3f3605a74283ff27e"
 }
