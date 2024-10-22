@@ -44,6 +44,7 @@ jobs:
         id: runvcpkg
         with:
           vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           # This one is not needed, as it is the default value anyway.
           # vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgJsonGlob: '**/vcpkg.json'
