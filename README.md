@@ -11,7 +11,7 @@ Before building and using GDALRasterConverter, ensure you have the following ins
 
 GDAL
 CMake (version 3.10 or later)
-A C++13 compatible compiler (e.g., GCC, Clang, MSVC)
+A C++23 compatible compiler (e.g., GCC, Clang, MSVC)
 Installation
 Clone the repository
 
