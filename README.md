@@ -38,4 +38,5 @@ This project is licensed under the MIT License.
 Credits
 GDAL for providing the underlying raster processing capabilities.
 CMake for the build configuration.
-This version reflects the use of C++ and CMake, including instructions for building the project, using the CLI, and enabling CUDA support. Let me know if you'd like any further changes!
+QT for UI
+This version reflects the use of C++ and CMake. Let me know if you'd like any further changes!
