@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Project Name and Language
-project(GDAL Raster Converter LANGUAGES CXX)
+project(GDALRasterConverter LANGUAGES CXX)
 
 # Set C++ Standard
 set(CMAKE_CXX_STANDARD 23)
