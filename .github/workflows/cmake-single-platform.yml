@@ -11,6 +11,7 @@ env:
   VCPKG_INSTALL_OPTIONS: --x-abi-tools-use-exact-versions
   VCPKG_BUILD_TYPE: release
   VCPKG_DISABLE_COMPILER_TRACKING: ON
+  VCPKG_DEFAULT_TRIPLET: x64-windows  # Set the triplet here
 
 jobs:
   job:
@@ -23,9 +24,6 @@ jobs:
         include:
           - os: windows-latest
             triplet: x64-windows
-
-    env:
-      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
 
     steps:
       - uses: actions/checkout@v3
@@ -45,18 +43,17 @@ jobs:
         shell: bash
         run: |
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
-          echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
           echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
+          echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
 
       - name: Run vcpkg
         id: runvcpkg
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: 'C:/vcpkg'
-          vcpkgTriplet: 'x64-windows'
           vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
           vcpkgJsonGlob: '**/vcpkg.json'
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          # Removed 'vcpkgTriplet' and 'githubToken' as they are not valid inputs in v11
 
       - name: List GitHub workspace before build
         run: |
@@ -66,7 +63,7 @@ jobs:
         shell: bash
 
       - name: Prints output of run-vcpkg's action
-        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}'"
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ env.VCPKG_DEFAULT_TRIPLET }}'"
 
       - name: Run CMake with vcpkg (Release configuration)
         uses: lukka/run-cmake@v10
