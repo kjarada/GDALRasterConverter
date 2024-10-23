@@ -14,6 +14,6 @@
     },
     "gdal"
   ],
-  "builtin-baseline": "<valid-commit-id>",
+  "builtin-baseline": "d1cfa53ba7e080819e0c1452f792e6324000432d",
   "defaultTriplet": "x64-windows"
 }
