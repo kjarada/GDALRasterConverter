@@ -9,10 +9,17 @@
       "architecture": {
         "value": "x64"
       },
-      "toolchainFile": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",  // <-- Hardcoded path
+      "toolchainFile": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-vs2022-vcpkg",
+      "configurePreset": "windows-vs2022-vcpkg",
+      "configuration": "Release"
     }
   ]
 }
