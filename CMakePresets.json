@@ -9,7 +9,7 @@
       "architecture": {
         "value": "x64"
       },
-      "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "toolchainFile": "${env:VCPKG_ROOT}/vcpkg/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
