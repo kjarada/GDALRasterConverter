@@ -11,7 +11,7 @@ env:
   VCPKG_INSTALL_OPTIONS: --x-abi-tools-use-exact-versions
   VCPKG_BUILD_TYPE: release
   VCPKG_DISABLE_COMPILER_TRACKING: ON
-  VCPKG_DEFAULT_TRIPLET: x64-windows  # Set the triplet here
+  VCPKG_DEFAULT_TRIPLET: x64-windows
 
 jobs:
   job:
@@ -21,9 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]
-        include:
-          - os: windows-latest
-            triplet: x64-windows
 
     steps:
       - uses: actions/checkout@v3
@@ -32,19 +29,16 @@ jobs:
 
       - uses: lukka/get-cmake@latest
 
-      - name: List GitHub workspace
-        run: |
-          path="${{ github.workspace }}"
-          unix_path="${path//\\//}"
-          ls -R "$unix_path"
-        shell: bash
-
-      - name: Set vcpkg root environment variable
+      - name: Set vcpkg environment variables
         shell: bash
         run: |
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
           echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
           echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
+
+      - name: Create buildtrees_short directory
+        run: mkdir C:\vcpkg\buildtrees_short
+        shell: cmd
 
       - name: Run vcpkg
         id: runvcpkg
@@ -53,17 +47,7 @@ jobs:
           vcpkgDirectory: 'C:/vcpkg'
           vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
           vcpkgJsonGlob: '**/vcpkg.json'
-          # Removed 'vcpkgTriplet' and 'githubToken' as they are not valid inputs in v11
-
-      - name: List GitHub workspace before build
-        run: |
-          path="${{ github.workspace }}"
-          unix_path="${path//\\//}"
-          ls -R "$unix_path"
-        shell: bash
-
-      - name: Prints output of run-vcpkg's action
-        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ env.VCPKG_DEFAULT_TRIPLET }}'"
+          runVcpkgFormatString: '--triplet ${VCPKG_DEFAULT_TRIPLET} install --x-buildtrees-root=C:/vcpkg/buildtrees_short'
 
       - name: Run CMake with vcpkg (Release configuration)
         uses: lukka/run-cmake@v10
@@ -74,9 +58,4 @@ jobs:
           buildPreset: 'windows-vs2022-vcpkg'
           buildPresetAdditionalArgs: '--config Release'
 
-      - name: List GitHub workspace after build
-        run: |
-          path="${{ github.workspace }}"
-          unix_path="${path//\\//}"
-          ls -R "$unix_path"
-        shell: bash
+      # Add any additional steps you need
