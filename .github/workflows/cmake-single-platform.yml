@@ -38,12 +38,34 @@ jobs:
         echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
         echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
 
+    - name: Restore vcpkg cache
+      id: cache-vcpkg
+      uses: actions/cache@v3
+      with:
+        path: |
+          C:/vcpkg/installed
+          C:/vcpkg/buildtrees
+          C:/vcpkg/downloads
+        key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
+        restore-keys: |
+          vcpkg-${{ runner.os }}-
+
     - name: Run vcpkg
       uses: lukka/run-vcpkg@v11
       with:
         vcpkgDirectory: 'C:/vcpkg'
         vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
         vcpkgJsonGlob: '**/vcpkg.json'
+
+    - name: Update vcpkg cache
+      if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+      uses: actions/cache@v3
+      with:
+        path: |
+          C:/vcpkg/installed
+          C:/vcpkg/buildtrees
+          C:/vcpkg/downloads
+        key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
 
     - name: Configure CMake
       uses: lukka/run-cmake@v10
@@ -65,4 +87,3 @@ jobs:
       with:
         name: Build-Artifacts
         path: '${{ github.workspace }}/build/windows-vs2022-vcpkg'
-
