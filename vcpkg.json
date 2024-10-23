@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/main/scripts/vcpkg.schema.json",
-  "name": "GDALRasterConverter",
+  "name": "gdal-raster-converter",
   "version": "1.0.0",
   "dependencies": [
     {
       "name": "qt",
       "default-features": false,
       "features": [
-        "core",
-        "gui",
-        "widgets"
+        "qtbase",
+        "qttools",
+        "qtwidgets"
       ]
     },
     "gdal"
