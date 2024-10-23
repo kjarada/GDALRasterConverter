@@ -11,7 +11,7 @@ env:
   VCPKG_INSTALL_OPTIONS: --x-abi-tools-use-exact-versions
   VCPKG_BUILD_TYPE: release
   VCPKG_DISABLE_COMPILER_TRACKING: ON
-  VCPKG_DEFAULT_TRIPLET: x64-windows
+  VCPKG_DEFAULT_TRIPLET: x64-windows  # Set the triplet here
 
 jobs:
   job:
@@ -47,7 +47,8 @@ jobs:
           vcpkgDirectory: 'C:/vcpkg'
           vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
           vcpkgJsonGlob: '**/vcpkg.json'
-          runVcpkgFormatString: '--triplet ${VCPKG_DEFAULT_TRIPLET} install --x-buildtrees-root=C:/vcpkg/buildtrees_short'
+          # Removed variable expansion to prevent syntax error
+          runVcpkgFormatString: 'install --x-buildtrees-root=C:/vcpkg/buildtrees_short'
 
       - name: Run CMake with vcpkg (Release configuration)
         uses: lukka/run-cmake@v10
