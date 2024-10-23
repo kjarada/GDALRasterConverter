@@ -35,6 +35,7 @@ jobs:
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
           echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
           echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
+          echo "VCPKG_BUILDTREES_ROOT=C:/vcpkg/buildtrees_short" >> $GITHUB_ENV
 
       - name: Create buildtrees_short directory
         run: mkdir C:\vcpkg\buildtrees_short
@@ -47,8 +48,7 @@ jobs:
           vcpkgDirectory: 'C:/vcpkg'
           vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
           vcpkgJsonGlob: '**/vcpkg.json'
-          # Removed variable expansion to prevent syntax error
-          runVcpkgFormatString: 'install --x-buildtrees-root=C:/vcpkg/buildtrees_short'
+          # Removed runVcpkgFormatString
 
       - name: Run CMake with vcpkg (Release configuration)
         uses: lukka/run-cmake@v10
