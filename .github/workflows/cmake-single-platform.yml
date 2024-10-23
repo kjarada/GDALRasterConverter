@@ -35,7 +35,10 @@ jobs:
       - uses: lukka/get-cmake@latest
 
       - name: List GitHub workspace
-        run: ls -R "${{ github.workspace // '\\' / '/' }}"
+        run: |
+          path="${{ github.workspace }}"
+          unix_path="${path//\\//}"
+          ls -R "$unix_path"
         shell: bash
 
       - name: Set vcpkg root environment variable
@@ -56,7 +59,10 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List GitHub workspace before build
-        run: ls -R "${{ github.workspace // '\\' / '/' }}"
+        run: |
+          path="${{ github.workspace }}"
+          unix_path="${path//\\//}"
+          ls -R "$unix_path"
         shell: bash
 
       - name: Prints output of run-vcpkg's action
@@ -72,5 +78,8 @@ jobs:
           buildPresetAdditionalArgs: '--config Release'
 
       - name: List GitHub workspace after build
-        run: ls -R "${{ github.workspace // '\\' / '/' }}"
+        run: |
+          path="${{ github.workspace }}"
+          unix_path="${path//\\//}"
+          ls -R "$unix_path"
         shell: bash
