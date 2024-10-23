@@ -4,12 +4,12 @@
   "version": "1.0.0",
   "dependencies": [
     {
-      "name": "qt", // or "qt6" if you prefer Qt 6
+      "name": "qt", 
       "default-features": false,
       "features": [
         "qtbase",
         "qtwidgets"
-        // Add other features if needed, but exclude "qtwebengine"
+
       ]
     },
     "gdal"
