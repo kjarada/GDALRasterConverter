@@ -1,8 +1,19 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/main/scripts/vcpkg.schema.json",
+  "name": "your-project-name",
+  "version": "1.0.0",
   "dependencies": [
-    "gdal",
-    "qt"
+    {
+      "name": "qt", // or "qt6" if you prefer Qt 6
+      "default-features": false,
+      "features": [
+        "qtbase",
+        "qtwidgets"
+        // Add other features if needed, but exclude "qtwebengine"
+      ]
+    },
+    "gdal"
   ],
-  "builtin-baseline": "c8582b4d83dbd36e1bebc08bf166b5eb807996b0"
+  "builtin-baseline": "<valid-commit-id>",
+  "defaultTriplet": "x64-windows"
 }
