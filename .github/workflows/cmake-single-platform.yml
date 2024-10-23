@@ -1,4 +1,4 @@
-name: CMake on a single platform
+name: CMake Build and Test
 
 on:
   push:
@@ -11,11 +11,11 @@ env:
   VCPKG_INSTALL_OPTIONS: --x-abi-tools-use-exact-versions
   VCPKG_BUILD_TYPE: release
   VCPKG_DISABLE_COMPILER_TRACKING: ON
-  VCPKG_DEFAULT_TRIPLET: x64-windows  # Set the triplet here
+  VCPKG_DEFAULT_TRIPLET: x64-windows
 
 jobs:
-  job:
-    name: ${{ matrix.os }}-${{ github.workflow }}
+  build:
+    name: ${{ matrix.os }} Build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -23,40 +23,46 @@ jobs:
         os: [windows-latest]
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: true
 
-      - uses: lukka/get-cmake@latest
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
 
-      - name: Set vcpkg environment variables
-        shell: bash
-        run: |
-          echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
-          echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
-          echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
-          echo "VCPKG_BUILDTREES_ROOT=C:/vcpkg/buildtrees_short" >> $GITHUB_ENV
+    - name: Set vcpkg environment variables
+      shell: bash
+      run: |
+        echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
+        echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
+        echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
 
-      - name: Create buildtrees_short directory
-        run: mkdir C:\vcpkg\buildtrees_short
-        shell: cmd
+    - name: Run vcpkg
+      uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgDirectory: 'C:/vcpkg'
+        vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
+        vcpkgJsonGlob: '**/vcpkg.json'
 
-      - name: Run vcpkg
-        id: runvcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgDirectory: 'C:/vcpkg'
-          vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
-          vcpkgJsonGlob: '**/vcpkg.json'
-          # Removed runVcpkgFormatString
+    - name: Configure CMake
+      uses: lukka/run-cmake@v10
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        configurePreset: 'windows-vs2022-vcpkg'
+        buildPreset: 'windows-vs2022-vcpkg'
+        buildPresetAdditionalArgs: '--config Release'
 
-      - name: Run CMake with vcpkg (Release configuration)
-        uses: lukka/run-cmake@v10
-        id: runcmake
-        with:
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          configurePreset: 'windows-vs2022-vcpkg'
-          buildPreset: 'windows-vs2022-vcpkg'
-          buildPresetAdditionalArgs: '--config Release'
+    - name: Build project
+      run: cmake --build "${{ github.workspace }}/build/windows-vs2022-vcpkg" --config Release
 
-      # Add any additional steps you need
+    # Optional: Add a step to run tests if applicable
+    # - name: Run tests
+    #   run: ctest --output-on-failure
+
+    - name: Artifact Upload (Optional)
+      uses: actions/upload-artifact@v3
+      with:
+        name: Build-Artifacts
+        path: '${{ github.workspace }}/build/windows-vs2022-vcpkg'
+
