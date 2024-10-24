@@ -2,15 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
 
   "dependencies": [
-    {
-      "name": "qt",
-      "default-features": false,
-      "features": [
-        "qt6-base",
-        "qt6-widgets"
-      ]
-    },
-    "gdal"
+    
+       "qt",
+      "gdal"
   ],
   "builtin-baseline": "d1cfa53ba7e080819e0c1452f792e6324000432d"
 }
