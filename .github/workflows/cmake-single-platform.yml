@@ -1,10 +1,10 @@
 name: CMake Build and Test
 
-# on:
-#   push:
-#     branches: [ "master" ]
-#   pull_request:
-#     branches: [ "master" ]
+on:
+  # push:
+  #   branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 env:
   BUILD_TYPE: Release
