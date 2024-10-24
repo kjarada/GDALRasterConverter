@@ -13,7 +13,7 @@ set(CMAKE_AUTOUIC OFF)
 set(CMAKE_AUTORCC ON)
 
 # Find Qt Packages
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 # Find GDAL
 find_package(GDAL REQUIRED)
@@ -33,7 +33,7 @@ add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
 # Link Libraries
 target_link_libraries(${PROJECT_NAME}
-    Qt::Widgets
+    Qt5::Widgets
     ${GDAL_LIBRARIES}
 )
 
