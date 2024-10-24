@@ -6,9 +6,8 @@
       "name": "qt",
       "default-features": false,
       "features": [
-        "qtbase",
-        "qttools",
-        "qtwidgets"
+        "qt-base",
+        "qt-widgets"
       ]
     },
     "gdal"
