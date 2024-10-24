@@ -7,9 +7,9 @@ on:
     branches: [ "master" ]
 
 env:
-  BUILD_TYPE: Release
+
   VCPKG_INSTALL_OPTIONS: --x-abi-tools-use-exact-versions
-  VCPKG_BUILD_TYPE: release
+
   VCPKG_DISABLE_COMPILER_TRACKING: ON
   VCPKG_DEFAULT_TRIPLET: x64-windows
 
@@ -35,7 +35,7 @@ jobs:
       shell: bash
       run: |
         echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
-        echo "VCPKG_BUILD_TYPE=release" >> $GITHUB_ENV
+
         echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
 
     - name: Restore vcpkg cache
@@ -73,10 +73,10 @@ jobs:
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         configurePreset: 'windows-vs2022-vcpkg'
         buildPreset: 'windows-vs2022-vcpkg'
-        buildPresetAdditionalArgs: '--config Release'
+ 
 
     - name: Build project
-      run: cmake --build "${{ github.workspace }}/build/windows-vs2022-vcpkg" --config Release
+      run: cmake --build "${{ github.workspace }}/build/windows-vs2022-vcpkg" 
 
     # Optional: Add a step to run tests if applicable
     # - name: Run tests
